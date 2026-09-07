@@ -1,0 +1,7 @@
+backups/
+codex-home/
+secrets/
+.codex_agent_venv/
+.container_venvs/
+.uv-cache/
+.DS_Store

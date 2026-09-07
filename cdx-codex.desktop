@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Codex CLI Docker
+Comment=Open Codex CLI in Docker
+Exec=/dev_projects/projects/cdx/launch.sh
+Icon=/dev_projects/projects/cdx/codex.svg
+Terminal=true
+Categories=Development;
+StartupNotify=true

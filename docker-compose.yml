@@ -1,0 +1,41 @@
+services:
+  codex:
+    build: .
+    cap_add:
+      - NET_ADMIN
+
+    devices:
+      - /dev/net/tun:/dev/net/tun
+
+    environment:
+      HOME: /root
+      CODEX_HOME: /root/.codex
+      CODEX_HOST_UID: "${CODEX_HOST_UID:-1000}"
+      CODEX_HOST_GID: "${CODEX_HOST_GID:-1000}"
+      AMNEZIAWG_ENABLED: "${AMNEZIAWG_ENABLED:-auto}"
+      OPENAI_VPN_DOMAINS: "${OPENAI_VPN_DOMAINS:-chatgpt.com,api.openai.com,auth.openai.com,ab.chatgpt.com,cdn.oaistatic.com,files.oaiusercontent.com,persistent.oaistatic.com}"
+
+    stdin_open: true
+    tty: true
+
+    healthcheck:
+      test: ["CMD", "test", "-f", "/run/codex-container-ready"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+      start_period: 2s
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    volumes:
+      - "${CODEX_PROJECTS_DIR:-./workspace}:/dev_projects/Projects"
+      - "${CODEX_WEBSTORM_PROJECTS_DIR:-./workspace}:/dev_projects/WebstormProjects"
+      - "${CODEX_PYCHARM_PROJECTS_DIR:-./workspace}:/dev_projects/PycharmProjects"
+
+      - ./codex-home:/root
+      - ./secrets:/etc/amneziawg:ro
+
+    working_dir: /dev_projects
+
+    command: /usr/local/bin/start-codex-container
