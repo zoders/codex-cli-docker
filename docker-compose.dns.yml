@@ -1,0 +1,4 @@
+services:
+  codex:
+    dns:
+      - "${CODEX_DNS}"

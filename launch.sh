@@ -6,6 +6,8 @@ cd "${PROJECT_DIR}"
 
 # shellcheck source=select-network-mode.sh
 source "${PROJECT_DIR}/select-network-mode.sh"
+# shellcheck source=select-dns-server.sh
+source "${PROJECT_DIR}/select-dns-server.sh"
 
 if ! docker info >/dev/null 2>&1; then
   if [[ "$(uname -s)" == "Darwin" ]] && command -v open >/dev/null 2>&1; then
@@ -39,11 +41,12 @@ if ! docker info >/dev/null 2>&1; then
 fi
 
 select_codex_network_mode
+select_codex_dns_server
 
-docker compose up -d --build --wait codex
+docker compose "${CODEX_COMPOSE_ARGS[@]}" up -d --build --wait codex
 
-if docker compose exec -T --user "${CODEX_HOST_UID:-1000}:${CODEX_HOST_GID:-1000}" codex test -s /root/.codex/auth.json; then
-  exec docker compose exec --user "${CODEX_HOST_UID:-1000}:${CODEX_HOST_GID:-1000}" codex codex resume --sandbox danger-full-access
+if docker compose "${CODEX_COMPOSE_ARGS[@]}" exec -T --user "${CODEX_HOST_UID:-1000}:${CODEX_HOST_GID:-1000}" codex test -s /root/.codex/auth.json; then
+  exec docker compose "${CODEX_COMPOSE_ARGS[@]}" exec --user "${CODEX_HOST_UID:-1000}:${CODEX_HOST_GID:-1000}" codex codex resume --sandbox danger-full-access
 fi
 
-exec docker compose exec --user "${CODEX_HOST_UID:-1000}:${CODEX_HOST_GID:-1000}" codex codex --sandbox danger-full-access
+exec docker compose "${CODEX_COMPOSE_ARGS[@]}" exec --user "${CODEX_HOST_UID:-1000}:${CODEX_HOST_GID:-1000}" codex codex --sandbox danger-full-access

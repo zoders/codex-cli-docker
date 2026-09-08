@@ -9,6 +9,7 @@ Linux поддерживаются стандартные меню KDE/GNOME, д
 - автоматическая сборка под архитектуру целевой машины (`arm64` или `amd64`);
 - одинаковые команды запуска на macOS и Linux;
 - выбор VPN или прямого подключения перед каждым запуском;
+- опциональный выбор DNS из редактируемого файла `dns-servers.txt`;
 - сохранение авторизации и истории в локальном `codex-home/`;
 - опциональный AmneziaWG userspace split tunnel только для OpenAI;
 - автоматическое создание `.env` с UID/GID и путями пользователя;
@@ -40,6 +41,11 @@ How should Codex CLI Docker connect?
 через обычную сеть Docker. При смене режима Compose пересоздаёт контейнер с
 новой сетевой настройкой.
 
+Если `dns-servers.txt` содержит адреса, после выбора VPN появляется отдельный
+английский выбор DNS. Каждый IPv4-адрес записывается на отдельной строке. Пустой
+файл отключает этот вопрос. DNS задаётся контейнеру напрямую и не добавляется в
+маршруты AmneziaWG.
+
 После `docker compose down` скрипт `exec_codex.sh` сам поднимет контейнер и
 дождётся его готовности.
 
@@ -47,6 +53,7 @@ How should Codex CLI Docker connect?
 
 - `Dockerfile` — Codex, `amneziawg-go` и `amneziawg-tools`;
 - `docker-compose.yml` — переносимая Compose-конфигурация;
+- `dns-servers.txt` — список доступных DNS-серверов по одному на строку;
 - `install.sh` — настройка macOS/Linux и первая сборка;
 - `install-shortcut.sh` — ярлык macOS или KDE/GNOME;
 - `exec_codex.sh` — запуск Codex внутри готового контейнера;
